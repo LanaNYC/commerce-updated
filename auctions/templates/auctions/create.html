@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<style>
+    .div-2 {
+    background-color: #ABBAEA;
+    }
+</style>
+
+    <h2> Create New Listing</h2>
+
+    {% if message %}
+        <div class="div-2"> <strong> {{ message }}</strong></div>
+    {% endif %} 
+
+    <!-- <div class="input-group input-group-lg ps-3 pe-3"> -->
+        <div class="form-group ps-5 pe-5">
+            <form action="{% url 'create_listing' user.id %}" method="post">
+                {% csrf_token %} 
+           
+                {{ form.as_p }}
+                
+                <button type="submit" class="btn btn-primary mb-2">Save</button>
+            </form>
+        </div>
+    <!-- </div>-->
+
+
+{% endblock %}

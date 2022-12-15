@@ -1,0 +1,42 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<style>
+    .div-2 {
+    background-color: #ABBAEA;
+    }
+</style>
+
+
+    <h2>{{user}}'s Closed Auctions</h2>
+
+    {% if message %}
+    <div class="div-2"> <strong> {{ message }}</strong></div>
+    {% endif %}
+
+    <div class=".container-fluid .container-fluid ps-3 pe-3">
+        {% for item in closed_listings %}
+        <div class="row p-3 border">
+            <div class="col-md-4">
+                <img class="img-fluid" src="{{ item.image }}"/>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-8 fs-5 fw-bold">
+                        <a href="{% url 'listing' item.id %}" >{{ item.title }} </a> 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8 fw-bold">    
+                        Starting bid: ${{ item.starting_bid }}.00 
+                    </div>
+                </div> 
+            </div>                 
+        </div>
+    </div>    
+        <br>
+    
+        {% endfor %}
+          
+{% endblock %}

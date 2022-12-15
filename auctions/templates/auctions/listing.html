@@ -1,0 +1,152 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<style>
+    .div-2 {
+    background-color: #ABBAEA;
+    }
+</style>
+
+
+    {% if message %}
+    <div class="div-2"> <strong> {{ message }}</strong></div>
+    {% endif %}
+    
+    <h2>{{listing.title}} </h2>
+
+    
+    <div class=".container-fluid ps-3 pe-3">  
+        <div class="row p-3">
+            <div class="col-md-4">  
+                <img class="img-fluid" src="{{ listing.image }}"/> 
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-8 fs-5">    
+                        {{listing.description}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>                    
+    <br>        
+    <div class=".container-fluid ps-3 pe-3"> 
+        Starting bid: ${{ listing.starting_bid }}.00
+        <br>
+       
+        {% if current_price is None %}
+            Current price: ${{ listing.starting_bid }}.00 <br>
+        {% else %}    
+            Current price: ${{ current_price }}.00  <br>
+        {% endif %}    
+    </div>           
+    <br>
+
+    <div class=".container-fluid ps-3 pe-3"> 
+    {% if active == False and winner_id == current_user %}
+
+        <h3 style="color:red;">
+            YOU WON THIS AUCTION!!! CONGRATULATION!
+        </h3>
+
+    {% elif active == False and current_user == owner %}    
+
+        <h3 style="color:red;">
+            CONGRATULATION!!! You have a winner! This auction is closed.
+        </h3>
+
+    {% else %}
+        
+       
+            <form action="{% url 'place_bid' listing.id %}" method="post">
+                {% csrf_token %}
+                <input type="number", name="ammount", placeholder="Place your bid here", min="0">
+                <input class="btn btn-primary" type="submit", value="Place Bid">
+             </form>
+        
+    {% endif %}   
+    </div>  
+    <br>
+    <div class=".container-fluid ps-3 pe-3"> 
+
+        {% if user.is_authenticated %}
+            {% if item %}
+            
+                <form action="{% url 'remove_watchlist' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input class="btn btn-primary" type="submit", value="Remove From Watchlist">
+                 </form>
+            
+            {% else %}
+           
+                <form action="{% url 'add_watchlist' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input class="btn btn-primary" type="submit", value="Add to Watchlist">
+                 </form>
+            
+            {% endif %}
+            <br>
+        {% else %}
+            <h2>Please log in to be able to add item to watchlist</h2>
+        {% endif %}
+    </div>    
+    <br>
+    <div class=".container-fluid ps-3 pe-3"> 
+        <p class="fs-5 fw-bold">
+            Details:
+        </p>
+        Category: {{ listing.category}} <br>         
+        Listed by {{listing.user_id}}
+    </div>    
+    <br>
+
+    <div class=".container-fluid ps-3 pe-3"> 
+        {% if current_user == owner  and active == True %}
+       
+            <form action="{% url 'close_listing' listing.id %}" method="post">
+                {% csrf_token %}
+                <input class="btn btn-primary btn-sm" type="submit", value="Close Auction">
+             </form>
+        
+        {% endif %}
+    </div>
+
+    <br>
+    <div class=".container-fluid ps-3 pe-3"> 
+       
+            <form action="{% url 'add_comment' listing.id %}" method="post" id="comment_form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <textarea rows="4" cols="50" name="comment" form="comment_form">
+                    Enter comment here...
+                </textarea>
+                <br>
+                <input class="btn btn-primary btn-sm" type="submit", value="Post your comment">
+            </form>
+            <br>
+    </div>   
+    <br>
+    <div>
+        <h5>
+            Comments:
+        </h5>
+    </div>
+    <div class=".container-fluid ps-3 pe-3"> 
+        {% if comments %}
+       
+            {% for comment in comments%}
+            <li> 
+                <strong>
+                    {{comment.user}}
+                </strong>
+                said
+                {{comment.commentText}}
+               <br> 
+            </li>   
+            {% endfor %}
+        
+        {% endif %}
+    </div>    
+    <br>
+
+{% endblock %}
